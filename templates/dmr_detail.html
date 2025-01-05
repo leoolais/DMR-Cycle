@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>DMR Details</h1>
+
+    <div class="card">
+        <div class="card-header">
+            DMR: {{ dmr.unique_id }}
+        </div>
+        <div class="card-body">
+            <p><strong>Description:</strong> {{ dmr.description }}</p>
+            <p><strong>Brand/Model:</strong> {{ dmr.brand_model }}</p>
+            <p><strong>Status:</strong> {{ dmr.status }}</p>
+            <p><strong>Storage Location:</strong> {{ dmr.storage_location }}</p>
+
+            <a href="{{ url_for('add_cycle', dmr_id=dmr.id) }}" class="btn btn-primary">Log Cycle</a>
+            <a href="{{ url_for('add_utilization', dmr_id=dmr.id) }}" class="btn btn-secondary">Log Utilization</a>
+
+        </div>
+    </div>
+
+    <h3 class="mt-4">Cycle History</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Operation</th>
+                <th>Timestamp</th>
+                <th>Operator</th>
+                <th>Location</th>
+                <th>Equipment Used</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cycle in cycles %}
+            <tr>
+                <td>{{ cycle.operation_type }}</td>
+                <td>{{ cycle.timestamp }}</td>
+                <td>{{ cycle.operator.first_name }} {{cycle.operator.last_name}} </td>
+                <td>{{ cycle.location }}</td>
+                <td>{{ cycle.equipment_used }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3 class="mt-4">Utilization History</h3>
+        <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Operator</th>
+                <th>Intervention Number</th>
+                <th>Healthcare Professional</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for util in utilizations %}
+            <tr>
+                <td>{{ util.timestamp }}</td>
+                <td>{{ util.operator.first_name }} {{ util.operator.last_name }}</td>
+                <td>{{ util.intervention_number }}</td>
+                <td>{{ util.healthcare_professional }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+{% endblock %}

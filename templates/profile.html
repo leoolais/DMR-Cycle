@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Operator Profile</h1>
+
+    <div class="card">
+         <div class="card-header">
+            Operator Details
+        </div>
+        <div class="card-body">
+            <p><strong>Username:</strong> {{ current_user.username }}</p>
+            <p><strong>First Name:</strong> {{ current_user.first_name }}</p>
+            <p><strong>Last Name:</strong> {{ current_user.last_name }}</p>
+        </div>
+    </div>
+
+
+{% endblock %}

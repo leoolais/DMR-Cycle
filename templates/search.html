@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Search DMR</h1>
+    <form method="post">
+        <div class="form-group">
+            <label for="search_term">Enter Unique ID:</label>
+            <input type="text" class="form-control" id="search_term" name="search_term" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+{% endblock %}

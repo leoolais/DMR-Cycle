@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Reusable Medical Devices</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Unique ID</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Location</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dmr in dmrs %}
+            <tr>
+                <td>{{ dmr.unique_id }}</td>
+                <td>{{ dmr.description }}</td>
+                <td>{{ dmr.status }}</td>
+                <td>{{ dmr.storage_location }}</td>
+                <td><a href="{{ url_for('dmr_detail', dmr_id=dmr.id) }}">View Details</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
