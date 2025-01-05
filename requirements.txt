@@ -3,4 +3,3 @@ gunicorn
 SQLAlchemy
 Flask-Login
 datetime
-functools
