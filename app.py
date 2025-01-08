@@ -9,7 +9,8 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, cur
 import functools
 
 
-app = Flask(__name__)
+
+app = Flask(__name__, static_folder='static')
 app.config['SECRET_KEY'] = 'supersecretkey'  # Replace with a strong secret key
 
 # Database initialization
