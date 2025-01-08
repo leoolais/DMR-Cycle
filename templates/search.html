@@ -4,9 +4,17 @@
     <h1>Search DMR</h1>
     <form method="post">
         <div class="form-group">
-            <label for="search_term">Enter Unique ID:</label>
-            <input type="text" class="form-control" id="search_term" name="search_term" required>
+            <label for="search_term">Enter Unique ID or Scan Barcode:</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="search_term" name="search_term" required>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" id="scanButton">Scan</button>
+                </div>
+            </div>
         </div>
+         <div id="scanner-container" style="display: none;">
+                <div id="scanner-viewport"></div>
+            </div>
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
 {% endblock %}
