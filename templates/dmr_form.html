@@ -2,10 +2,15 @@
 
 {% block content %}
     <h1>Add New DMR</h1>
-    <form method="post">
-        <div class="form-group">
+    <form method="post" id="dmrForm">
+         <div class="form-group">
             <label for="unique_id">Unique ID:</label>
-            <input type="text" class="form-control" id="unique_id" name="unique_id" required>
+             <div class="input-group">
+                 <input type="text" class="form-control" id="unique_id" name="unique_id" required>
+                 <div class="input-group-append">
+                      <button class="btn btn-outline-secondary" type="button" id="generateButton">Generate Barcode</button>
+                 </div>
+            </div>
         </div>
         <div class="form-group">
             <label for="description">Description:</label>
@@ -19,6 +24,12 @@
             <label for="storage_location">Storage Location:</label>
             <input type="text" class="form-control" id="storage_location" name="storage_location">
         </div>
+        <div class="form-group" id="barcodeContainer" style="display: none;">
+            <label>Barcode:</label><br>
+            <svg id="barcode"></svg><br>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="printButton">Print Barcode</button>
+        </div>
+
         <button type="submit" class="btn btn-primary">Add DMR</button>
     </form>
 {% endblock %}
