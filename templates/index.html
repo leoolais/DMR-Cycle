@@ -10,6 +10,7 @@
                 <th>Status</th>
                 <th>Location</th>
                 <th>Actions</th>
+                <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
             </tr>
         </thead>
         <tbody>
@@ -20,6 +21,8 @@
                 <td>{{ dmr.status }}</td>
                 <td>{{ dmr.storage_location }}</td>
                 <td><a href="{{ url_for('dmr_detail', dmr_id=dmr.id) }}">View Details</a></td>
+                 
+                <script src="{{ url_for('static', filename='script.js') }}"></script>
             </tr>
             {% endfor %}
         </tbody>

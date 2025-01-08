@@ -6,36 +6,52 @@ document.addEventListener('DOMContentLoaded', function () {
     const barcodeContainer = document.getElementById('barcodeContainer');
     const barcodeSVG = document.getElementById('barcode');
     const printButton = document.getElementById('printButton');
+    const dmrForm = document.getElementById('dmrForm')
 
-
-   if (generateButton) {
-       generateButton.addEventListener('click', function(event){
-        event.preventDefault();
-        generateBarcode();
-      });
-   }
-
-  function generateBarcode() {
-      const uniqueId = uniqueIdInput.value;
-       if (uniqueId){
+    function generateBarcode() {
+        const uniqueId = uniqueIdInput.value;
+        if (uniqueId) {
             JsBarcode("#barcode", uniqueId, {
                 format: "CODE128",
                 displayValue: true,
                 width: 2,
                 height: 60,
                 textMargin: 2
-             });
-              barcodeContainer.style.display = 'block';
-       }
+            });
+            barcodeContainer.style.display = 'block';
+        }
+    }
 
-  }
-
-    if (printButton) {
-        printButton.addEventListener('click', function(){
-         window.print();
+    if (generateButton) {
+         generateButton.addEventListener('click', function (event) {
+            event.preventDefault();
+            generateBarcode();
         });
     }
-// Scanner Code
+
+
+   if (printButton) {
+       printButton.addEventListener('click', function (event) {
+          event.preventDefault(); // Prevent default button behavior
+           printBarcode();
+      });
+    }
+
+function printBarcode() {
+    let printWindow = window.open('', 'Print', 'height=400,width=600');
+
+    printWindow.document.write('<html><head><title>Print Barcode</title>');
+     printWindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">'); // Add Bootstrap stylesheet for styling.
+      printWindow.document.write('</head><body>');
+    printWindow.document.write('<div class="container mt-4">' +  barcodeContainer.innerHTML + '</div>');
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+    }
+
+    // Scanner Code
     const scanButton = document.getElementById('scanButton');
     const scannerContainer = document.getElementById('scanner-container');
     const searchInput = document.getElementById('search_term');
