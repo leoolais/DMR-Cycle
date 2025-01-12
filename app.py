@@ -1,16 +1,14 @@
-
 from flask import Flask, render_template, request, redirect, url_for, flash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, DMR, Operator, CycleOperation, Utilization
+from models import Base, DMR, Operator, CycleOperation, Utilization, ServiceHealthcare
 from datetime import datetime
 import hashlib
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 import functools
 
 
-
-app = Flask(__name__, static_folder='static')
+app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'  # Replace with a strong secret key
 
 # Database initialization
@@ -85,27 +83,52 @@ def index():
     dmrs = session.query(DMR).all()
     return render_template('index.html', dmrs=dmrs)
 
+@app.route('/add_service', methods=['GET', 'POST'])
+@login_required_with_error
+def add_service():
+    if request.method == 'POST':
+        service_name = request.form['service_name']
+        healthcare_professionals = request.form['healthcare_professionals']
+        storage_location = request.form['storage_location']
+        new_service = ServiceHealthcare(
+            service_name=service_name,
+            healthcare_professionals=healthcare_professionals,
+            storage_location=storage_location
+        )
+        session.add(new_service)
+        session.commit()
+        flash('Service added successfully.', 'success')
+        return redirect(url_for('list_services'))
+    return render_template('service_form.html')
+
+@app.route('/list_services', methods=['GET'])
+@login_required_with_error
+def list_services():
+    services = session.query(ServiceHealthcare).all()
+    return render_template('service_list.html', services=services)
 
 @app.route('/add_dmr', methods=['GET', 'POST'])
 @login_required_with_error
 def add_dmr():
+    services = session.query(ServiceHealthcare).all()
     if request.method == 'POST':
         unique_id = request.form['unique_id']
         description = request.form['description']
         brand_model = request.form['brand_model']
-        storage_location = request.form['storage_location']
+        service_id = request.form['service_id']
+
 
         new_dmr = DMR(
             unique_id=unique_id,
             description=description,
             brand_model=brand_model,
-            storage_location=storage_location
+            service_id=service_id
         )
         session.add(new_dmr)
         session.commit()
         flash('DMR Added successfully.', 'success')
         return redirect(url_for('index'))
-    return render_template('dmr_form.html')
+    return render_template('dmr_form.html', services=services)
 
 @app.route('/dmr_detail/<int:dmr_id>', methods=['GET'])
 @login_required_with_error
@@ -166,21 +189,23 @@ def add_cycle(dmr_id):
 @app.route('/add_utilization/<int:dmr_id>', methods=['GET', 'POST'])
 @login_required_with_error
 def add_utilization(dmr_id):
+    services = session.query(ServiceHealthcare).all()
     if request.method == 'POST':
         intervention_number = request.form['intervention_number']
-        healthcare_professional = request.form['healthcare_professional']
+        service_id = request.form['service_id']
+
         new_utilization = Utilization(
             dmr_id=dmr_id,
             operator_id=current_user.id,
             intervention_number=intervention_number,
-            healthcare_professional=healthcare_professional
+            service_id=service_id
         )
 
         session.add(new_utilization)
         session.commit()
         flash('Utilization logged.', 'success')
         return redirect(url_for('dmr_detail', dmr_id=dmr_id))
-    return render_template('utilization_form.html', dmr_id=dmr_id)
+    return render_template('utilization_form.html', dmr_id=dmr_id, services=services)
 
 @app.route('/search', methods=['GET', 'POST'])
 @login_required_with_error

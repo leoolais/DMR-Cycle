@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Healthcare Services</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Service Name</th>
+                <th>Healthcare Professionals</th>
+                <th>Storage Location</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service in services %}
+            <tr>
+                <td>{{ service.service_name }}</td>
+                <td>{{ service.healthcare_professionals }}</td>
+                <td>{{ service.storage_location }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

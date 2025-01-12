@@ -7,21 +7,37 @@ from datetime import datetime
 
 Base = declarative_base()
 
+
+class ServiceHealthcare(Base):
+    __tablename__ = 'service_healthcare'
+    id = Column(Integer, primary_key=True)
+    service_name = Column(String, nullable=False)
+    healthcare_professionals = Column(String)
+    storage_location = Column(String)
+
+    dmrs = relationship("DMR", back_populates="service")
+    utilizations = relationship("Utilization", back_populates="service")
+
+    def __repr__(self):
+        return f"<ServiceHealthcare(service_name='{self.service_name}')>"
+
 class DMR(Base):
     __tablename__ = 'dmrs'
     id = Column(Integer, primary_key=True)
     unique_id = Column(String, unique=True, nullable=False)
     description = Column(String)
     brand_model = Column(String)
-    storage_location = Column(String)
+    service_id = Column(Integer, ForeignKey('service_healthcare.id'), nullable=False)
     status = Column(String, default="Usable")  # Usable, Non-Usable
-
+    
     # Relationships
     cycles = relationship("CycleOperation", back_populates="dmr")
     utilizations = relationship("Utilization", back_populates="dmr")
+    service = relationship("ServiceHealthcare", back_populates="dmrs")
 
     def __repr__(self):
         return f"<DMR(unique_id='{self.unique_id}', description='{self.description}')>"
+
 
 class Operator(Base):
     __tablename__ = 'operators'
@@ -49,7 +65,7 @@ class CycleOperation(Base):
     operator_id = Column(Integer, ForeignKey('operators.id'), nullable=False)
     location = Column(String) # Updated DMR storage location
     equipment_used = Column(String) # E.g., Autoclave #1
-
+    
     #Relationships
     dmr = relationship("DMR", back_populates="cycles")
     operator = relationship("Operator", back_populates="cycles")
@@ -65,11 +81,12 @@ class Utilization(Base):
     timestamp = Column(DateTime, default=datetime.utcnow)
     operator_id = Column(Integer, ForeignKey('operators.id'), nullable=False)
     intervention_number = Column(String)
-    healthcare_professional = Column(String)
+    service_id = Column(Integer, ForeignKey('service_healthcare.id'), nullable=False)
 
     # Relationships
     dmr = relationship("DMR", back_populates="utilizations")
     operator = relationship("Operator", back_populates="utilizations")
+    service = relationship("ServiceHealthcare", back_populates="utilizations")
 
     def __repr__(self):
         return f"<Utilization(dmr_id='{self.dmr_id}', intervention_number='{self.intervention_number}')>"
@@ -87,9 +104,9 @@ def after_cycle_operation_insert(mapper, connection, target):
         dmr.status = "Usable"
     else:
         dmr.status = "Non-Usable"
-    dmr.storage_location = target.location
+    dmr.service_location = dmr.service.storage_location
     session.commit()
     session.close()
-
+    
 # Create a session factory for managing db transactions
 Session = sessionmaker(bind=engine)

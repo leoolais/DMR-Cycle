@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="description">Description:</label>
+           <label for="description">Description:</label>
             <input type="text" class="form-control" id="description" name="description">
         </div>
         <div class="form-group">
@@ -21,8 +21,12 @@
             <input type="text" class="form-control" id="brand_model" name="brand_model">
         </div>
         <div class="form-group">
-            <label for="storage_location">Storage Location:</label>
-            <input type="text" class="form-control" id="storage_location" name="storage_location">
+            <label for="service_id">Service:</label>
+            <select class="form-control" id="service_id" name="service_id" required>
+                {% for service in services %}
+                <option value="{{ service.id }}">{{ service.service_name }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="form-group" id="barcodeContainer" style="display: none;">
             <label>Barcode:</label><br>

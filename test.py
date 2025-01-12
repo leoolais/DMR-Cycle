@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, Operator, DMR # Import the models
+from models import Base, Operator, DMR, ServiceHealthcare # Import the models
 import hashlib
 
 
@@ -44,6 +44,26 @@ if __name__ == '__main__':
             service_assignment=operator_data['service_assignment']
         )
         session.add(new_operator)
+    # Create test Services
+    test_services = [
+        {
+            'service_name': 'Sterilization',
+            'healthcare_professionals': 'Sterilization Team',
+            'storage_location': 'Storage A'
+        },
+        {
+            'service_name': 'Surgical',
+            'healthcare_professionals': 'Surgical Team',
+            'storage_location': 'Storage B'
+        }
+    ]
+    for service_data in test_services:
+        new_service = ServiceHealthcare(
+           service_name=service_data['service_name'],
+           healthcare_professionals=service_data['healthcare_professionals'],
+           storage_location=service_data['storage_location']
+        )
+        session.add(new_service)
 
     # Create test DMRs
     test_dmrs = [
@@ -51,13 +71,13 @@ if __name__ == '__main__':
              'unique_id': 'DMR001',
              'description': 'Forceps',
             'brand_model': 'ABC',
-            'storage_location': 'Storage A'
+            'service_id':1
         },
         {
             'unique_id': 'DMR002',
             'description': 'Scalpel Handle',
             'brand_model': 'XYZ',
-            'storage_location': 'Storage B'
+            'service_id':2
         },
     ]
 
@@ -66,7 +86,7 @@ if __name__ == '__main__':
             unique_id=dmr_data['unique_id'],
             description=dmr_data['description'],
             brand_model=dmr_data['brand_model'],
-            storage_location=dmr_data['storage_location']
+            service_id=dmr_data['service_id']
         )
         session.add(new_dmr)
 
